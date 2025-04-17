@@ -1,0 +1,33 @@
+declare -A module_cfg_names=(
+    ["arducam"]="arducam_links.txt"
+    ["arducam_4lane"]="arducam_4lane_links.txt"
+    ["imx477"]="imx477_links.txt"
+    ["imx230"]="imx230_links.txt"
+    ["imx298"]="imx298_links.txt"
+    ["imx477_master_slave"]="imx477_master_slave_links.txt"
+    ["imx477_stereo"]="imx477_stereo_links.txt"
+    ["imx477_v3link"]="imx477_v3link_links.txt"
+    ["imx219_v3link"]="imx219_v3link_links.txt"
+    ["imx519_v3link"]="imx519_v3link_links.txt"
+    ["imx708_v3link"]="imx708_v3link_links.txt"
+    ["imx519"]="imx519_links.txt"
+    ["imx219"]="imx219_links.txt"
+    ["imx708"]="imx708_links.txt"
+)
+
+declare -A module_cfg_download_links=(
+    ["arducam"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/arducam_links.txt"
+    ["arducam_4lane"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/arducam_4lane_links.txt"
+    ["imx477"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx477_links.txt"
+    ["imx230"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx230_links.txt"
+    ["imx298"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx298_links.txt"
+    ["imx477_master_slave"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx477_master_slave_links.txt"
+    ["imx477_stereo"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx477_stereo_links.txt"
+    ["imx477_v3link"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx477_v3link_links.txt"
+    ["imx219_v3link"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx219_v3link_links.txt"
+    ["imx519_v3link"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx519_v3link_links.txt"
+    ["imx708_v3link"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx708_v3link_links.txt"
+    ["imx519"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx519_links.txt"
+    ["imx219"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx219_links.txt"
+    ["imx708"]="https://github.com/ArduCAM/MIPI_Camera/releases/download/v0.0.3/imx708_links.txt"
+)
