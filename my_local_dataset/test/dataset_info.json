@@ -1,0 +1,96 @@
+{
+  "builder_name": "parquet",
+  "citation": "@misc{ vehicle-registration-plates-trudk_dataset,\n    title = { Vehicle Registration Plates Dataset },\n    type = { Open Source Dataset },\n    author = { Augmented Startups },\n    howpublished = { \\url{ https://universe.roboflow.com/augmented-startups/vehicle-registration-plates-trudk } },\n    url = { https://universe.roboflow.com/augmented-startups/vehicle-registration-plates-trudk },\n    journal = { Roboflow Universe },\n    publisher = { Roboflow },\n    year = { 2022 },\n    month = { jun },\n    note = { visited on 2023-01-18 },\n}\n",
+  "config_name": "mini",
+  "dataset_name": "license-plate-object-detection",
+  "dataset_size": 228909,
+  "description": "",
+  "download_checksums": {
+    "hf://datasets/keremberke/license-plate-object-detection@1aa5c47386185967e5a70904f54c8c42e6b21c2c/mini/train/0000.parquet": {
+      "num_bytes": 80388,
+      "checksum": null
+    },
+    "hf://datasets/keremberke/license-plate-object-detection@1aa5c47386185967e5a70904f54c8c42e6b21c2c/mini/validation/0000.parquet": {
+      "num_bytes": 80388,
+      "checksum": null
+    },
+    "hf://datasets/keremberke/license-plate-object-detection@1aa5c47386185967e5a70904f54c8c42e6b21c2c/mini/test/0000.parquet": {
+      "num_bytes": 80388,
+      "checksum": null
+    }
+  },
+  "download_size": 241164,
+  "features": {
+    "image_id": {
+      "dtype": "int64",
+      "_type": "Value"
+    },
+    "image": {
+      "_type": "Image"
+    },
+    "width": {
+      "dtype": "int32",
+      "_type": "Value"
+    },
+    "height": {
+      "dtype": "int32",
+      "_type": "Value"
+    },
+    "objects": {
+      "feature": {
+        "id": {
+          "dtype": "int64",
+          "_type": "Value"
+        },
+        "area": {
+          "dtype": "int64",
+          "_type": "Value"
+        },
+        "bbox": {
+          "feature": {
+            "dtype": "float32",
+            "_type": "Value"
+          },
+          "length": 4,
+          "_type": "Sequence"
+        },
+        "category": {
+          "names": [
+            "license_plate"
+          ],
+          "_type": "ClassLabel"
+        }
+      },
+      "_type": "Sequence"
+    }
+  },
+  "homepage": "https://universe.roboflow.com/augmented-startups/vehicle-registration-plates-trudk/dataset/1?ref=roboflow2huggingface",
+  "license": "CC BY 4.0",
+  "size_in_bytes": 470073,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 76303,
+      "num_examples": 3,
+      "dataset_name": "license-plate-object-detection"
+    },
+    "validation": {
+      "name": "validation",
+      "num_bytes": 76303,
+      "num_examples": 3,
+      "dataset_name": "license-plate-object-detection"
+    },
+    "test": {
+      "name": "test",
+      "num_bytes": 76303,
+      "num_examples": 3,
+      "dataset_name": "license-plate-object-detection"
+    }
+  },
+  "version": {
+    "version_str": "1.0.0",
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  }
+}
