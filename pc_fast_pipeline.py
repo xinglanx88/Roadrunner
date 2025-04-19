@@ -49,7 +49,7 @@ license_plate_detector = YOLO('bestnew.pt')
 #vid = cv2.VideoCapture(video_path)
 #vid.set(cv2.CAP_PROP_POS_FRAMES, 0)
 #if not vid.isOpened():
-_ = license_plate_detector.predict(np.zeros((640, 640, 3), dtype=np.uint8), device='cuda')
+_ = license_plate_detector.predict(np.zeros((640, 640, 3), dtype=np.uint8), device=device)
 _ = ocr_recognizer.run(np.zeros((40, 120), dtype=np.uint8))
 ready_event.set()   
 #    print("Could not open video")
@@ -123,7 +123,7 @@ def process_img():
         dur = time.time()
         
         # Predict license plates in this frame using YOLO detector
-        results = license_plate_detector.predict(frame, device='cuda')
+        results = license_plate_detector.predict(frame, device)
         prev_plate = None
         for r in results:
             boxes = r.boxes.xyxy
