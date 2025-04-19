@@ -53,9 +53,11 @@ for filename in os.listdir(raw_image_dir):
             
             # Save the cropped image to a temporary file
             with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
+                cropped_path = os.path.join(output_dir, f"cropped_{filename}")
                 temp_filename = tmp.name
                 cropped_plate.save(temp_filename, format="JPEG")
-            
+                cropped_plate.save(cropped_path)
+
             # Run OCR on the temporary file using the ONNX recognizer
             ocr_result = ocr_recognizer.run(temp_filename)
             

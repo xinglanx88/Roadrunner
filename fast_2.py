@@ -19,7 +19,8 @@ alpr = ALPR(
 
 #print("Using device:", "cuda" if torch.cuda.is_available() else "cpu")
 # Define the directory containing your raw images.
-image_dir = "/home/roadrunner/hf_vc_model/my_local_dataset/raw_images/"
+#image_dir = "/home/roadrunner/hf_vc_model/my_local_dataset/raw_images/" jetson path
+image_dir = "./my_local_dataset/cropped_images2/"
 
 # Gather all image file paths in the directory (you can extend to other extensions if needed)
 image_paths = [os.path.join(image_dir, f) for f in os.listdir(image_dir)
@@ -29,6 +30,10 @@ image_paths = [os.path.join(image_dir, f) for f in os.listdir(image_dir)
 for image_path in image_paths:
     imloadtime = time.time()
     result = alpr.predict(image_path)
+    if(len(result) == 0):
+        print("No plates detected")
+        continue
+    # Print the results for each detected plate
     plate_text = result[0].ocr.text
     print(plate_text)
     imloadtime = time.time()-imloadtime

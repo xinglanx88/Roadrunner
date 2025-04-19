@@ -13,6 +13,16 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 
+#only needed in PC:
+
+#import onnxruntime as ort
+
+# Use only CUDA and CPU (if GPU is supported)
+#session = ort.InferenceSession("your_model.onnx", providers=[
+#    'CUDAExecutionProvider',  # optional if you have GPU
+#    'CPUExecutionProvider'
+#])
+
 
 
 # ----- Detection Model: YOLOS for license plate detection -----
@@ -25,9 +35,10 @@ ready_event = threading.Event()
 torch.serialization.add_safe_globals([DetectionModel])
 latest = None
 waiter = threading.Lock()
-video_path = '/home/roadrunner/hf_vc_model/output.mp4'
+#video_path = '/home/roadrunner/hf_vc_model/output.mp4' jetson version 
+video_path = './my_local_dataset/IMG_3011.mp4' # PC version
 print("Exists:", os.path.exists(video_path))
-output_dir = '/home/roadrunner/hf_vc_model/my_local_dataset/cropped_images2'
+output_dir = './my_local_dataset/cropped_images2'
 vidgoing = True
 frame_num = 0
 dur = time.time()
@@ -82,20 +93,30 @@ license_plates = [
     "2081AJU",
     "TUV4567"
 ]
-output_txt = "detections.txt"
+output_txt = "./detections.txt"
 if os.path.exists(output_txt):
     os.remove(output_txt)
 
+
 plate_counts = {plate: 0 for plate in license_plates}
+
 def process_img():
     global latest, vidgoing, frame_num, dur, framect, plate_counts, prev_plate
 
     framect = 0
     while vidgoing:
+        
         with waiter:
             if latest is None:
                 continue
             frame = latest.copy()
+        """
+        if frame_num == 0 or frame_num % 10 == 0:
+            cropped_path = os.path.join(output_dir, f"cropped_{frame_num}.jpg")
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame_pil = Image.fromarray(frame_rgb)
+            frame_pil.save(cropped_path)
+        """
         frame_num += 1  # update frame counter after verifying we have a frame
         dur = time.time()
         
@@ -116,7 +137,9 @@ def process_img():
                 with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp:
                     temp_filename = tmp.name
                 cropped_plate_pil.save(temp_filename, format="JPEG")
-                
+                cropped_path = os.path.join(output_dir, f"cropped_{frame_num}.jpg")
+                cropped_plate_pil.save(cropped_path)
+
                 # Run OCR on the temporary file using your OCR recognizer
                 ocr_result = ocr_recognizer.run(temp_filename)
                 # Assume OCR result is a list and we take the first element; remove trailing underscores
@@ -124,9 +147,11 @@ def process_img():
                 
                 # Only process results of length 7
                 if len(ocr_text) <= 8 and len(ocr_text) >= 6:
-                    # If plate already exists in dict, increment count; otherwise, initialize count
-                    if ocr_text not in plate_counts:
-                        plate_counts[ocr_text] = 0
+                    # If plate already exists in dict, increment count; otherwise, initialize count 
+                    # this is to track flase positives
+
+                    #if ocr_text not in plate_counts:
+                    #    plate_counts[ocr_text] = 0
                     # If previous plate is different, reset its count
                     if prev_plate is not None and prev_plate != ocr_text and prev_plate in plate_counts:
                         plate_counts[prev_plate] = 0
@@ -136,7 +161,7 @@ def process_img():
                         prev_plate = ocr_text
                     
                     # If count reaches 5, report the plate and reset its count
-                        if plate_counts[ocr_text] == 3:
+                        if plate_counts[ocr_text] == 5:
                             # Report result with a fabricated location (modify as needed)
                             with open(output_txt, "a") as f:
                                 f.write(f"Plate {ocr_text} found at location (X, Y) in frame {frame_num}\n")
