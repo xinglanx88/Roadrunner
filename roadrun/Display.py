@@ -138,6 +138,83 @@ class CameraFeed(QWidget):
         self.video_label.clear()
         self.stacked_widget.setCurrentIndex(0)  # Go back to the main menu
 
+    """Displays the camera feed."""
+    def __init__(self, stacked_widget):
+        super().__init__()
+        self.stacked_widget = stacked_widget
+        self.setWindowTitle("Demo Feed")
+
+        self.label = QLabel(self)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setStyleSheet("font-size: 48px;")
+        self.label.setFixedHeight(40)
+
+        self.video_label = QLabel(self)
+
+        self.back_button = QPushButton("🔙 Back to Menu")
+        self.back_button.clicked.connect(self.return_to_menu)
+        self.back_button.setFixedHeight(40)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.video_label)
+        layout.addWidget(self.back_button)
+        self.setLayout(layout)
+
+        import cv2
+
+        # Define the GStreamer pipeline
+        self.gstreamer_pipeline = (
+            "v4l2src device=/dev/video1 ! "
+            "video/x-raw, format=YUY2, width=640, height=480, framerate=30/1 ! "
+            "videoconvert ! "
+            "appsink"
+        )
+
+        # Create a VideoCapture object using the GStreamer pipeline
+        self.cap = cv2.VideoCapture(0)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_frame)
+
+    def showEvent(self, event: QEvent):
+        super().showEvent(event)
+        self.start_camera()
+
+    def start_camera(self):
+        """Start the camera when the screen is shown."""
+        if not self.cap.isOpened():
+            print("kill yourself")
+            self.cap.open(self.gstreamer_pipeline, cv2.CAP_GSTREAMER)
+        self.timer.start(30)
+
+    def update_frame(self):
+        """Fetch a new frame from the camera and display it."""
+        ret, frame = self.cap.read()
+        if ret:
+            print(f"Original frame shape: {frame.shape}")  # Check frame shape
+
+            # If the frame already has 3 channels (BGR or other formats), we skip the YUYV to BGR conversion
+            if frame.shape[2] == 3:
+                # No need to convert, just change from BGR to RGB for display
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            else:
+                print("Error: Unexpected number of channels in the frame!")
+
+            # Convert the frame to QImage
+            height, width, channel = frame.shape
+            bytes_per_line = 3 * width
+            q_img = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            self.video_label.setPixmap(QPixmap.fromImage(q_img))
+
+
+
+    def return_to_menu(self):
+        """Stop camera and return to the main menu."""
+        self.timer.stop()
+        self.cap.release()
+        self.video_label.clear()
+        self.stacked_widget.setCurrentIndex(0)  # Go back to the main menu
+
+
 class OnScreenKeyboard(QWidget):
     def __init__(self, line_edit):
         super().__init__()
