@@ -11,11 +11,11 @@ import numpy as np
 from ultralytics.nn.tasks import DetectionModel
 
 # Add the safe global so that torch.load can safely load the checkpoint.
-torch.serialization.add_safe_globals([DetectionModel])
+#torch.serialization.add_safe_globals([DetectionModel])
 ready_event = threading.Event()
 latest = None
 waiter = threading.Lock()
-video_path = '/home/roadrunner/hf_vc_model/my_local_dataset/output.mov'
+video_path = '/home/roadrunner/Roadrunner/my_local_dataset/IMG_3011.mp4'
 print("Exists:", os.path.exists(video_path))
 output_dir = '/home/roadrunner/hf_vc_model/my_local_dataset/cropped_images2'
 vidgoing = True

@@ -28,6 +28,7 @@ print(f"Using device: {device}")
 # ----- Detection Model: YOLOS for license plate detection -----
 #from transformers import YolosImageProcessor, YolosForObjectDetection
 from fast_plate_ocr import ONNXPlateRecognizer
+
 ocr_recognizer = ONNXPlateRecognizer('global-plates-mobile-vit-v2-model')
 ready_event = threading.Event()
 
@@ -110,6 +111,7 @@ def process_img():
             if latest is None:
                 continue
             frame = latest.copy()
+            frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
         """
         if frame_num == 0 or frame_num % 10 == 0:
             cropped_path = os.path.join(output_dir, f"cropped_{frame_num}.jpg")

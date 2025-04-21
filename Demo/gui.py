@@ -37,8 +37,8 @@ class DemoWindow(QWidget):
         self.timer.start(30)  # approx ~30 FPS
 
     def update_frame(self):
-        if shared.latest is not None:
-            frame = shared.latest.copy()
+        if shared.plate_frame is not None:
+            frame = shared.plate_frame.copy()
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             h, w, ch = frame.shape
             bytes_per_line = ch * w

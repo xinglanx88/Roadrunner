@@ -32,7 +32,7 @@ ocr_recognizer = ONNXPlateRecognizer('global-plates-mobile-vit-v2-model')
 ready_event = threading.Event()
 
 # Add the safe global so that torch.load can safely load the checkpoint.
-torch.serialization.add_safe_globals([DetectionModel])
+#torch.serialization.add_safe_globals([DetectionModel])
 latest = None
 waiter = threading.Lock()
 #video_path = '/home/roadrunner/hf_vc_model/output.mp4' jetson version 
