@@ -1,0 +1,50 @@
+[ WARN:0@5.505] global cap_gstreamer.cpp:1728 open OpenCV | GStreamer warning: Cannot query video position: status=0, value=-1, duration=-1
+Exception in thread Thread-2 (process_img):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/home/roadrunner/Roadrunner/Demo/detection_fast.py", line 74, in process_img
+    results = license_plate_detector.predict(frame, device='cuda')
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/engine/model.py", line 549, in predict
+    return self.predictor.predict_cli(source=source) if is_cli else self.predictor(source=source, stream=stream)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 218, in __call__
+    return list(self.stream_inference(source, model, *args, **kwargs))  # merge list of Result into one
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 35, in generator_context
+    response = gen.send(None)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 329, in stream_inference
+    preds = self.inference(im, *args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/engine/predictor.py", line 173, in inference
+    return self.model(im, augment=self.args.augment, visualize=visualize, embed=self.args.embed, *args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/nn/autobackend.py", line 591, in forward
+    y = self.model(im, augment=augment, visualize=visualize, embed=embed, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 120, in forward
+    return self.predict(x, *args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 138, in predict
+    return self._predict_once(x, profile, visualize, embed)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/nn/tasks.py", line 159, in _predict_once
+    x = m(x)  # run
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/ultralytics/nn/modules/conv.py", line 91, in forward_fuse
+    return self.act(self.conv(x))
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 460, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/home/roadrunner/.local/lib/python3.10/site-packages/torch/nn/modules/conv.py", line 456, in _conv_forward
+    return F.conv2d(input, weight, bias, self.stride,
+RuntimeError: Given groups=1, weight of size [32, 3, 3, 3], expected input[1, 4, 192, 320] to have 3 channels, but got 4 channels instead

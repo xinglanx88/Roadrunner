@@ -1,7 +1,11 @@
 # main.py
+import sys
+sys.path.append('/usr/lib/python3.10/dist-packages')
+
 import cv2
-from PyQt5.QtWidgets import QApplication
-# from gui import DemoWindow  # Import your GUI class
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget
+from gui import DemoWindow  # Import your GUI class
+from Display import MainWindow
 import detection_fast  # Import your YOLO pipeline
 import shared  # Import shared variables
 import time
@@ -19,12 +23,10 @@ def main():
 )"""
     pipeline = (
     "nvarguscamerasrc sensor-id=0 ! "
-    "video/x-raw(memory:NVMM),width=1920,height=1080,framerate=30/1 ! "
-    "nvvidconv flip-method=0 ! "
-    "video/x-raw,format=BGRx ! "
-    "videoconvert ! "
-    "video/x-raw,format=BGR ! "
-    "appsink drop=true sync=false max-buffers=1"
+    "video/x-raw(memory:NVMM), width=1920, height=1080, framerate=60/1 ! "
+    "nvvidconv ! "
+    "video/x-raw, format=BGRx ! "  # Convert to BGRx (RGB-like format)
+    "appsink"
 )
 
     cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
@@ -34,30 +36,47 @@ def main():
     read.start()
     process.start()
 
-    # app = QApplication(sys.argv)
-    # demo_window = DemoWindow()
-    # demo_window.show()
+    app = QApplication(sys.argv)
+    demo_window = DemoWindow()
+    demo_window.show()
 
-    # Run the Qt event loop
-    # sys.exit(app.exec_())
+    #Run the Qt event loop
+    sys.exit(app.exec_())
 
     shared.vidgoing = True
     read.join()
     process.join()
     cap.release()
+def gstreamer_pipeline(
+    sensor_id=0,
+    capture_width=1920, capture_height=1080,
+    display_width=1920, display_height=1080,
+    framerate=30, flip_method=0):
+    return (
+        f"nvarguscamerasrc sensor-id={sensor_id} ! "
+        f"video/x-raw(memory:NVMM),width=(int){capture_width},height=(int){capture_height},"
+        f"format=(string)NV12,framerate=(fraction){framerate}/1 ! "
+        f"nvvidconv flip-method={flip_method} ! "
+        f"video/x-raw,format=(string)BGRx ! "
+        f"videoconvert ! "
+        f"video/x-raw,format=(string)BGR ! "
+        "appsink drop=true sync=false max-buffers=1"
+    )
 
 
 def main_2():
     # 1. Build the GStreamer pipeline string (your 1920×1080/30 fps setup)
+    """
     pipeline = (
-      "nvarguscamerasrc sensor-id=0 ! "
-      "video/x-raw(memory:NVMM),width=1920,height=1080,framerate=30/1 ! "
-      "nvvidconv flip-method=0 ! "
-      "video/x-raw,format=BGRx ! "
-      "videoconvert ! "
-      "video/x-raw,format=BGR ! "
-      "appsink drop=true sync=false max-buffers=1"
-    )
+    "nvarguscamerasrc sensor-id=0 ! "
+    "video/x-raw(memory:NVMM),width=1920,height=1080,framerate=30/1 ! "
+    "nvvidconv flip-method=0 ! "
+    "video/x-raw,format=BGRx ! "
+    "videoconvert ! "
+    "video/x-raw,format=BGR ! "
+    "appsink drop=true sync=false max-buffers=1"
+)"""
+    pipeline = gstreamer_pipeline(0,1920,1080,1920,1080,30,0)
     cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
 
     # 2. Make sure we actually want to keep reading
@@ -70,15 +89,16 @@ def main_2():
     read_thread.start()
     process_thread.start()
 
-    # 4. Block here until user hits Ctrl-C
-    try:
-        while shared.vidgoing:
-            time.sleep(0.5)
-    except KeyboardInterrupt:
-        print("Stopping...")
-        shared.vidgoing = False
+    # Handle Ctrl-C gracefully
 
-    # 5. Clean up
+    # Start Qt app
+    app = QApplication(sys.argv)
+    main_window = MainWindow(app)
+    main_window.show()
+    app.exec_()
+
+    # Clean up after Qt loop exits
+    shared.vidgoing = False
     read_thread.join()
     process_thread.join()
     cap.release()

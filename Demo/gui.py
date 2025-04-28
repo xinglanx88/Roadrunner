@@ -3,51 +3,59 @@ import cv2
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtWidgets import QApplication, QLabel, QPushButton, QVBoxLayout, QWidget
 from PyQt5.QtGui import QImage, QPixmap
+import numpy as np
 import shared  # Import shared variables
+
+import cv2
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import Qt
 
 class DemoWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("YOLO License Plate Demo")
+        self.setWindowTitle('License Plate Detection')
+        self.setGeometry(100, 100, 1920, 1080)
 
-        # Image display
-        self.image_label = QLabel()
-
-        # Plate label
-        self.plate_label = QLabel("Detected Plate: N/A")
-        self.plate_label.setAlignment(Qt.AlignCenter)
-        self.plate_label.setFixedHeight(40)
-        self.plate_label.setStyleSheet("font-size: 24px;")
+        self.image_label = QLabel(self)
+        self.image_label.setAlignment(Qt.AlignCenter)
 
         # Back button
-        self.back_button = QPushButton("Back to Menu")
+        self.back_button = QPushButton("Back to Menu", self)
         self.back_button.setFixedHeight(40)
         self.back_button.clicked.connect(self.back_to_menu)
 
         # Layout
         layout = QVBoxLayout()
         layout.addWidget(self.image_label)
-        layout.addWidget(self.plate_label)
         layout.addWidget(self.back_button)
         self.setLayout(layout)
 
+
         # Timer for periodic frame updates
-        self.timer = QTimer()
+        self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
         self.timer.start(30)  # approx ~30 FPS
 
     def update_frame(self):
-        if shared.plate_frame is not None:
+        # Ensure shared.plate_frame has valid data (non-None)
+        if hasattr(shared, 'plate_frame') and shared.plate_frame is not None:
             frame = shared.plate_frame.copy()
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            h, w, ch = frame.shape
-            bytes_per_line = ch * w
-            qimg = QImage(frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
-            self.image_label.setPixmap(QPixmap.fromImage(qimg))
 
-            # Update plate label
-            self.plate_label.setText(f"Detected Plate: {shared.last_plate}")
+            if frame.shape[2] == 3:
+                # No need to convert, just change from BGR to RGB for display
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            else:
+                print("Error: Unexpected number of channels in the frame!")
 
+            # Convert the frame to QImage
+            height, width, channel = frame.shape
+            bytes_per_line = 3 * width
+            q_img = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            self.image_label.setPixmap(QPixmap.fromImage(q_img))
+        else:
+            print("tf")
+
+        
     def back_to_menu(self):
         shared.vidgoing = False  # Stop the YOLO pipeline thread
         self.timer.stop()

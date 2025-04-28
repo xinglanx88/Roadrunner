@@ -1,3 +1,5 @@
+import sys
+sys.path.append('/usr/lib/python3.10/dist-packages')
 import cv2
 
 # Define GStreamer pipeline for IMX477 camera
@@ -5,6 +7,7 @@ gstreamer_pipeline = (
     "nvarguscamerasrc sensor-id=0 ! "
     "video/x-raw(memory:NVMM), width=1920, height=1080, framerate=60/1 ! "
     "nvvidconv ! "
+    "video/x-raw, format=BGRx ! "  # Convert to BGRx (RGB-like format)
     "appsink"
 )
 
